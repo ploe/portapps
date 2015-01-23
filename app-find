@@ -1,0 +1,23 @@
+#! /usr/bin/perl
+
+if (!@ARGV) {
+	print STDERR "app-find: No arguments\n\n";
+	print STDERR "We loop through all the args, which are regular expressions, looking in the ports tree for a name that matches.\n";
+	print STDERR "If it does we print it. We don't print the duplicates however.\n";
+	exit 1;
+}
+
+my @ports = `find /usr/ports/ | grep pkg-descr`;
+my %set;
+for my $arg (@ARGV) {
+	for my $p (@ports) {
+		my ($path, $port) = ($p =~ /^(\/usr\/ports\/.*?\/(.*?))\/pkg-descr$/);
+
+		$set{$path} = 1 if ($port =~ $arg);
+	}
+}
+
+my @paths = sort keys %set;
+
+print STDERR "app-find: Found nothing\n" if (!scalar @paths);
+print "$_\n" for (@paths);

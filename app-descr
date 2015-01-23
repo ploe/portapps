@@ -1,0 +1,15 @@
+#! /usr/bin/perl
+
+for my $port (<STDIN>) {
+	chomp $port;
+	my $path = "$port/pkg-descr";
+	if (-e $path) {
+		print "$port:\n";
+		print "-" x (length ($port) + 1) . "\n";
+		system("cat $path");
+		print "\n";
+	}
+	else {
+		print STDERR "app-descr: '$path' not found\n";
+	}
+}
